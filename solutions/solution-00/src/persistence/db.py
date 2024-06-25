@@ -14,13 +14,15 @@
 
 from src.models.base import Base
 from src.persistence.repository import Repository
+from src import db
 
 
 class DBRepository(Repository):
-    """Dummy DB repository"""
-
+    """Database implementation"""
+   
     def __init__(self) -> None:
-        """Not implemented"""
+        db.create_all()
+        
 
     def get_all(self, model_name: str) -> list:
         """Not implemented"""
@@ -33,11 +35,18 @@ class DBRepository(Repository):
         """Not implemented"""
 
     def save(self, obj: Base) -> None:
-        """Not implemented"""
+        """Save a new object in a database"""
+        db.session.add(obj)
+        db.session.commit()
 
     def update(self, obj: Base) -> Base | None:
-        """Not implemented"""
+        """Update an object in a databese"""
+        db.session.commit()
 
     def delete(self, obj: Base) -> bool:
-        """Not implemented"""
+        """Delete an object in a database"""
+        if obj in db.session:
+            db.session.delete(obj)
+            db.session.commit()
+            return True
         return False
