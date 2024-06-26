@@ -3,22 +3,33 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+import os
 
 cors = CORS()
 db = SQLAlchemy()
 
-def create_app(config_class="src.config.DevelopmentConfig") -> Flask:
+load_dotenv()
+
+def create_app() -> Flask:
     """
     Create a Flask app with the given configuration class.
     The default configuration class is DevelopmentConfig.
     """
     app = Flask(__name__)
     app.url_map.strict_slashes = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///development.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['USE_DATABASE'] = True
-
-    app.config.from_object(config_class)
+    
+    environment = os.getenv("FLASK_ENV", "development")
+    
+    if environment == "production":
+        app.config.from_object("src.config.ProductionConfig")
+    elif environment == "testing":
+        app.config.from_object("src.config.TestingConfig")
+    else:
+        app.config.from_object("src.config.DevelopmentConfig")
+    
+        
+   
 
     register_extensions(app)
     register_routes(app)
