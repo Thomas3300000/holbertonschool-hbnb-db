@@ -4,13 +4,16 @@ City related functionality
 
 from src.models.base import Base
 from src.models.country import Country
+from src import db
+from src.models.user import User
 
 
 class City(Base):
     """City representation"""
 
-    name: str
-    country_code: str
+    name = db.Column(db.String(128), nullable=False)
+    country_code = db.Column(db.String(3), db.ForeignKey("country.code"), nullable=False)
+
 
     def __init__(self, name: str, country_code: str, **kw) -> None:
         """Dummy init"""
