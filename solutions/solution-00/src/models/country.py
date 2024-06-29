@@ -2,7 +2,6 @@
 Country related functionality
 """
 from src import db
-from src.models.base import Base
 from src.models.city import City
 from src.models.user import User
 
@@ -18,7 +17,6 @@ class Country:
     name = db.Column(db.String(128), nullable=False)
     code = db.Column(db.String(3), nullable=False, primary_key=True)
     cities = db.Column(db.List(db.String(128)))
-    user_id = db.Column(db.String(60), db.ForeignKey("users.id"), nullable=False)
 
     def __init__(self, name: str, code: str, user_id: str, cities: list, **kw) -> None:
         """Dummy init"""
