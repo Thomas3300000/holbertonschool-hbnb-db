@@ -32,30 +32,3 @@ class Repository(ABC):
     @abstractmethod
     def delete(self, obj) -> bool:
         """Delete an object"""
-
-class DataManager(Repository):
-    """Data manager class"""
-    def __init__(self) -> None:
-        self.database = app.database['USE_DATABASE']
-        if self.database:
-            self.repo = DBRepository()
-        else:
-            self.repo = FileRepository()
-
-    def save(self, obj) -> None:
-            self.repo.save(obj)
-
-    def update(self, obj) -> None:
-        self.repo.update(obj)
-
-    def delete(self, obj) -> bool:
-            return self.repo.delete(obj)
-
-    def reload(self) -> None:
-            self.repo.reload()
-
-    def get_all(self, model_name: str) -> list:
-            return self.repo.get_all(model_name)
-
-    def get(self, model_name: str, id: str) -> None:
-            return self.repo.get(model_name, id)

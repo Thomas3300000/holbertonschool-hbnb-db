@@ -23,16 +23,20 @@ class DBRepository(Repository):
     def __init__(self) -> None:
         db.create_all()
         
-
     def get_all(self, model_name: str) -> list:
-        """Not implemented"""
+        """Get all objects of a given model"""
+        if model_name in db.session:
+            return db.session.query(model_name).all()
         return []
 
     def get(self, model_name: str, obj_id: str) -> Base | None:
-        """Not implemented"""
+        """Get an object by its ID"""
+        if model_name in db.session:
+            return db.session.query(model_name).get(obj_id)
+        return None
 
     def reload(self) -> None:
-        """Not implemented"""
+        pass
 
     def save(self, obj: Base) -> None:
         """Save a new object in a database"""

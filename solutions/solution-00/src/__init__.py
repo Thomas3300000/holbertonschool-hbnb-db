@@ -5,9 +5,14 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
+from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt
+
 
 cors = CORS()
 db = SQLAlchemy()
+jwt = JWTManager()
+bcrypt = Bcrypt()
 
 load_dotenv()
 

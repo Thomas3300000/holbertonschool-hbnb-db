@@ -3,7 +3,7 @@ User related functionality
 """
 
 from src.models.base import Base
-from src import db
+from src import db, bcrypt
 
 
 class User(Base):
@@ -12,7 +12,7 @@ class User(Base):
     __table__ = "users"
 
     email = db.Column(db.String(128), nullable=False, unique=True)
-    password = db.Column(db.String(128), nullable=False)
+    hash_password = db.Column(db.String(128), nullable=False)
     first_name = db.Column(db.String(128), nullable=False)
     last_name = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
@@ -21,10 +21,12 @@ class User(Base):
         """Dummy init"""
         super().__init__(**kw)
         self.email = email
-        self.password = password
+        self.set_password(password)
         self.first_name = first_name
         self.last_name = last_name
         self.is_admin = is_admin
+        
+   
 
     def __repr__(self) -> str:
         """Dummy repr"""
@@ -41,7 +43,12 @@ class User(Base):
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
         }
-
+    def set_password(self, password):
+        self.hash_password = bcrypt.generate_password_hash(password).decode("utf-8")
+    
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.hash_password, password)
+        
     @staticmethod
     def create(user: dict) -> "User":
         """Create a new user"""
@@ -72,7 +79,7 @@ class User(Base):
         if "email" in data:
             user.email = data["email"]
         if "password" in data:
-            user.password = data["password"]
+            user.set_password = data["password"]
         if "first_name" in data:
             user.first_name = data["first_name"]
         if "last_name" in data:
